@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Mazo de las Muchas Cosas / Tarot</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <div id="leftSidebar">
+            <h2>Atributos del Personaje</h2>
+            <p id="playerName">Nombre: <span>Héroe</span></p>
+            <p id="playerHealth">Salud: <span>100</span></p>
+            <p id="playerMana">Mana: <span>50</span></p>
+            <p id="playerGold">Oro: <span>0</span></p>
+            <p id="playerLevel">Nivel: <span>1</span></p>
+
+            <h2>Inventario</h2>
+            <ul id="playerInventory">
+                <!-- Los objetos del inventario se agregarán dinámicamente aquí -->
+            </ul>
+        </div>
+
+        <div id="mainContent">
+            <h1>Juego de Cartas</h1>
+            <div id="deckSelection" class="deck-selection">
+                <label for="deckSelector">Selecciona un mazo:</label>
+                <select id="deckSelector">
+                    <option value="tarot">Tarot</option>
+                    <option value="manyThings">Deck of Many Things</option>
+                </select>
+            </div>
+            <div id="cardDisplay" class="card-display"></div>
+            <div id="buttonContainer">
+                <button id="drawCardBtn" aria-label="Sacar una carta del mazo">Sacar Carta</button>
+                <button id="resetDeckBtn" aria-label="Reiniciar el mazo" style="display: none;">Reiniciar Mazo</button>
+            </div>
+        </div>
+
+        <div id="rightSidebar">
+            <h2>Eventos</h2>
+            <ul id="eventList">
+                <!-- Los eventos se agregarán dinámicamente aquí -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="js/cards.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
