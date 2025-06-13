@@ -11,6 +11,7 @@ let playableDeck = [];
 let drawnCards = [];
 let cardsDrawnThisTurn = 0;
 const MAX_CARDS_PER_TURN = 4;
+const MAX_TURNS = 10; // Cambia este valor al límite de turnos que desees
 let turnCounter = 0; // Contador de turnos
 let cardUsageCount = {}; // Objeto para rastrear cuántas veces ha salido cada carta
 
@@ -53,6 +54,13 @@ function initializeDeck() {
 
 // Función para sacar una carta
 function drawRandomCard() {
+    if (turnCounter >= MAX_TURNS) {
+        updateMessage(`¡Has alcanzado el máximo de ${MAX_TURNS} turnos! El juego ha terminado.`);
+        drawCardBtn.disabled = true;
+        resetDeckBtn.style.display = 'block';
+        return;
+    }
+
     if (cardsDrawnThisTurn === 0) {
         turnCounter++; // Incrementa el contador de turnos solo al inicio del turno
         logEvent(`Inicio del Turno ${turnCounter}`); // Registra el inicio del turno
