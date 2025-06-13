@@ -33,22 +33,62 @@ body {
 /* Área lateral izquierda (atributos del personaje) */
 #leftSidebar {
     flex: 1;
-    background-color: #444;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    overflow-y: auto; /* Permite desplazarse si el contenido excede la altura */
-    max-height: 100%; /* Asegura que no exceda la altura del contenedor */
+    background: linear-gradient(135deg, #2d1e3a 0%, #4b326e 100%);
+    padding: 20px 18px;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(60, 0, 90, 0.25);
+    border: 2px solid #a78bfa;
+    position: relative;
+    font-family: 'Cinzel', 'Georgia', serif;
 }
 
 #leftSidebar h2 {
     color: #ffd700;
-    margin-bottom: 15px;
+    margin-bottom: 18px;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px #4b326e, 0 0px 2px #fff;
 }
 
 #leftSidebar p {
-    margin: 10px 0;
-    font-size: 1em;
+    margin: 14px 0;
+    font-size: 1.1em;
+    color: #f3e8ff;
+    background: rgba(60, 0, 90, 0.18);
+    border-left: 5px solid #ffd700;
+    border-radius: 8px;
+    padding: 8px 14px 8px 18px;
+    box-shadow: 0 1px 4px rgba(60, 0, 90, 0.10);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Cinzel', 'Georgia', serif;
+    letter-spacing: 1px;
+}
+
+/* Iconos para los atributos (puedes usar emojis o SVGs) */
+#playerLevel::before {
+    content: "⭐";
+    margin-right: 8px;
+    color: #ffd700;
+    font-size: 1.2em;
+}
+#playerHealth::before {
+    content: "❤";
+    margin-right: 8px;
+    color: #ff4d6d;
+    font-size: 1.2em;
+}
+#playerMana::before {
+    content: "🔮";
+    margin-right: 8px;
+    color: #60a5fa;
+    font-size: 1.2em;
+}
+#playerGold::before {
+    content: "💰";
+    margin-right: 8px;
+    color: #ffd700;
+    font-size: 1.2em;
 }
 
 /* Área principal (contenido del juego) */
@@ -384,4 +424,17 @@ button#resetDeckBtn:hover {
 @keyframes flashMessage {
     0%   { background: #fef08a; }
     100% { background: linear-gradient(90deg, #f8fafc 0%, #e0e7ef 100%); }
+}
+
+/* Estilos adicionales para mensajes de advertencia y finales */
+#messageDisplay.warning {
+    background: linear-gradient(90deg, #fef08a 0%, #fde047 100%);
+    border-left: 6px solid #eab308;
+    color: #7c4700;
+}
+
+#messageDisplay.final {
+    background: linear-gradient(90deg, #fecaca 0%, #f87171 100%);
+    border-left: 6px solid #dc2626;
+    color: #7f1d1d;
 }

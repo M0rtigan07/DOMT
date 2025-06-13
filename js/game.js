@@ -63,8 +63,13 @@ function handleCardEffect(card) {
             }
             break;
         case "La espada":
-            player.inventory.push("Espada"); // Añade "Espada" al inventario
-            logEvent("¡Has obtenido una espada! Se ha añadido a tu inventario.");
+            if (!player.inventory.some(item => item.nombre === "Espada")) {
+                player.inventory.push({
+                    nombre: "Espada",
+                    img: "img/cartas/espada.png" // Cambia la ruta según tu estructura
+                });
+                logEvent("¡Has obtenido una espada! Se ha añadido a tu inventario.");
+            }
             break;
         default:
             logEvent(`La carta "${card.name}" no tiene un efecto directo.`);
@@ -81,16 +86,50 @@ function handleCardEffect(card) {
 
 function updatePlayerInventory() {
     const inventoryList = document.getElementById('playerInventory');
-    inventoryList.innerHTML = ''; // Limpia el contenido actual del inventario en la interfaz
+    inventoryList.innerHTML = '';
 
     if (player.inventory.length === 0) {
         const emptyMessage = document.createElement('li');
         emptyMessage.textContent = "El inventario está vacío.";
+        emptyMessage.style.fontStyle = "italic";
+        emptyMessage.style.color = "#bfa76a";
         inventoryList.appendChild(emptyMessage);
     } else {
         player.inventory.forEach(item => {
             const inventoryItem = document.createElement('li');
-            inventoryItem.textContent = item;
+            inventoryItem.style.display = "flex";
+            inventoryItem.style.alignItems = "center";
+            inventoryItem.style.marginBottom = "8px";
+            inventoryItem.style.background = "rgba(255,255,255,0.08)";
+            inventoryItem.style.borderRadius = "6px";
+            inventoryItem.style.padding = "4px 8px";
+
+            // Soporta tanto objetos antiguos (string) como nuevos (objeto con nombre e imagen)
+            if (typeof item === "string") {
+                // Inventario antiguo: solo nombre
+                inventoryItem.textContent = item;
+            } else {
+                // Inventario nuevo: objeto con nombre e imagen
+                if (item.img) {
+                    const img = document.createElement('img');
+                    img.src = item.img;
+                    img.alt = item.nombre;
+                    img.style.width = "32px";
+                    img.style.height = "48px";
+                    img.style.objectFit = "cover";
+                    img.style.marginRight = "10px";
+                    img.style.borderRadius = "4px";
+                    img.style.boxShadow = "0 1px 4px rgba(60,0,90,0.15)";
+                    inventoryItem.appendChild(img);
+                }
+                const span = document.createElement('span');
+                span.textContent = item.nombre;
+                span.style.fontSize = "1em";
+                span.style.color = "#6d4c1c";
+                span.style.fontWeight = "bold";
+                inventoryItem.appendChild(span);
+            }
+
             inventoryList.appendChild(inventoryItem);
         });
     }
@@ -103,6 +142,7 @@ function checkGameOver() {
         logEvent("¡Game Over! Tu salud ha llegado a 0.");
         drawCardBtn.disabled = true; // Desactiva el botón de sacar carta
         resetDeckBtn.style.display = 'block'; // Muestra el botón de reiniciar
+        restartGameBtn.style.display = 'block'; // Muestra el botón de reinicio total
         alert("¡Game Over! Has perdido la partida.");
     }
 }

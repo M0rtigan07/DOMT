@@ -6,6 +6,7 @@ const drawCardBtn = document.getElementById('drawCardBtn');
 const resetDeckBtn = document.getElementById('resetDeckBtn');
 const cardDisplay = document.getElementById('cardDisplay');
 const messageDisplay = document.getElementById('messageDisplay');
+const restartGameBtn = document.getElementById('restartGameBtn');
 
 let playableDeck = [];
 let drawnCards = [];
@@ -14,6 +15,7 @@ const MAX_CARDS_PER_TURN = 4;
 const MAX_TURNS = 10; // Cambia este valor al límite de turnos que desees
 let turnCounter = 0; // Contador de turnos
 let cardUsageCount = {}; // Objeto para rastrear cuántas veces ha salido cada carta
+let lastSwordTurn = -10; // Inicializa para que pueda salir en el primer turno
 
 // Función para inicializar el mazo y el turno
 function initializeDeck() {
@@ -58,6 +60,7 @@ function drawRandomCard() {
         updateMessage(`¡Has alcanzado el máximo de ${MAX_TURNS} turnos! El juego ha terminado.`);
         drawCardBtn.disabled = true;
         resetDeckBtn.style.display = 'block';
+        restartGameBtn.style.display = 'block'; // Muestra el botón de reinicio total
         return;
     }
 
@@ -91,22 +94,38 @@ function drawRandomCard() {
         const randomIndex = Math.floor(Math.random() * playableDeck.length);
         drawnCard = playableDeck[randomIndex];
 
-        // Verificar si la carta ha alcanzado su límite de repeticiones
-        if (cardUsageCount[drawnCard.name] >= 2) { // Límite de 2 para "La Estrella"
+        // --- RESTRICCIÓN PARA "La espada" ---
+        if (
+            drawnCard.name === "La espada" &&
+            turnCounter - lastSwordTurn < 10
+        ) {
             attempts++;
-            if (attempts > 10) {
+            if (attempts > 20) {
+                logEvent('No se pudo encontrar una carta válida. Intenta reiniciar el mazo.');
+                return;
+            }
+            continue; // Busca otra carta
+        }
+
+        // Límite de repeticiones para otras cartas
+        if (cardUsageCount[drawnCard.name] >= 2) {
+            attempts++;
+            if (attempts > 20) {
                 logEvent("No se pudo encontrar una carta válida. Intenta reiniciar el mazo.");
                 return;
             }
             continue;
         }
 
-        // Si la carta es válida, elimínala del mazo y continúa
         playableDeck.splice(randomIndex, 1);
         break;
     } while (true);
 
-    // Incrementar el contador de uso de la carta
+    // --- Si es "La espada", actualiza el turno ---
+    if (drawnCard.name === "La espada") {
+        lastSwordTurn = turnCounter;
+    }
+
     if (!cardUsageCount[drawnCard.name]) {
         cardUsageCount[drawnCard.name] = 0;
     }
@@ -144,6 +163,14 @@ function displayCard(card) {
 function updateMessage(message) {
     if (messageDisplay) {
         messageDisplay.textContent = message;
+        // Quita clases previas
+        messageDisplay.classList.remove('warning', 'final');
+        // Aplica color especial según el turno
+        if (turnCounter === MAX_TURNS - 2) { // Turno 9 si MAX_TURNS es 11
+            messageDisplay.classList.add('warning');
+        } else if (turnCounter === MAX_TURNS - 1) { // Turno 10 si MAX_TURNS es 11
+            messageDisplay.classList.add('final');
+        }
     }
 }
 
@@ -213,7 +240,13 @@ function handleCardEffect(card) {
 drawCardBtn.addEventListener('click', drawRandomCard);
 resetDeckBtn.addEventListener('click', () => {
     initializeDeck();
-    resetDeckBtn.style.display = 'none'; // Oculta el botón después de reiniciar
+    resetDeckBtn.style.display = 'none';
+    restartGameBtn.style.display = 'none'; // Oculta el botón al reiniciar el mazo
+});
+
+// Listener para el botón de reinicio total
+restartGameBtn.addEventListener('click', () => {
+    location.reload();
 });
 
 // Añadimos un listener para que el mazo se reinicie automáticamente al cambiar la selección
