@@ -1,7 +1,8 @@
 // js/script.js
 
-// Obtenemos una referencia al nuevo selector de mazo
+// Referencias a elementos del DOM
 const deckSelector = document.getElementById('deckSelector');
+const startGameBtn = document.getElementById('startGameBtn');
 const drawCardBtn = document.getElementById('drawCardBtn');
 const resetDeckBtn = document.getElementById('resetDeckBtn');
 const cardDisplay = document.getElementById('cardDisplay');
@@ -12,12 +13,12 @@ let playableDeck = [];
 let drawnCards = [];
 let cardsDrawnThisTurn = 0;
 const MAX_CARDS_PER_TURN = 4;
-const MAX_TURNS = 10; // Cambia este valor al límite de turnos que desees
-let turnCounter = 0; // Contador de turnos
-let cardUsageCount = {}; // Objeto para rastrear cuántas veces ha salido cada carta
-let lastSwordTurn = -10; // Inicializa para que pueda salir en el primer turno
+const MAX_TURNS = 10;
+let turnCounter = 1;
+let cardUsageCount = {};
+let lastSwordTurn = -10;
 
-// Función para inicializar el mazo y el turno
+// Inicializa el mazo y los atributos del jugador
 function initializeDeck() {
     const selectedDeckType = deckSelector.value;
 
@@ -26,7 +27,7 @@ function initializeDeck() {
     } else if (selectedDeckType === 'manyThings') {
         playableDeck = [...deckOfManyThings];
     } else {
-        playableDeck = [...majorArcanaTarot]; // Por defecto, usa el Tarot
+        playableDeck = [...majorArcanaTarot];
         console.warn("Tipo de mazo no reconocido, usando Tarot por defecto.");
     }
 
@@ -35,38 +36,46 @@ function initializeDeck() {
     cardDisplay.innerHTML = '';
     drawCardBtn.disabled = false;
 
-    // Reinicia los atributos del jugador, pero NO el inventario
+    // Reinicia los atributos del jugador (usa game.js)
     player.health = 100;
     player.mana = 50;
     player.gold = 0;
     player.level = 1;
+    player.inventory = [];
 
-    // Reinicia el contador de uso de cartas
     cardUsageCount = {};
-
+    turnCounter = 1;
     updatePlayerStats();
     updatePlayerInventory();
 
-    // Oculta el botón de reiniciar
+    // Mostrar solo el botón de inicio
+    startGameBtn.style.display = 'inline-block';
+    drawCardBtn.style.display = 'none';
     resetDeckBtn.style.display = 'none';
-
-    // Actualiza el mensaje inicial
-    updateMessage("Selecciona un mazo y saca tu primera carta.");
+    restartGameBtn.style.display = 'none';
+    updateMessage("Selecciona un mazo y pulsa 'Iniciar Juego'.");
 }
+
+// Evento para el botón de inicio
+startGameBtn.addEventListener('click', () => {
+    startGameBtn.style.display = 'none';
+    drawCardBtn.style.display = 'inline-block';
+    updateMessage("¡Juego iniciado! Saca tu primera carta.");
+});
+
+// Evento para cambiar de mazo
+deckSelector.addEventListener('change', initializeDeck);
 
 // Función para sacar una carta
 function drawRandomCard() {
-    if (turnCounter >= MAX_TURNS) {
-        updateMessage(`¡Has alcanzado el máximo de ${MAX_TURNS} turnos! El juego ha terminado.`);
-        drawCardBtn.disabled = true;
-        resetDeckBtn.style.display = 'block';
-        restartGameBtn.style.display = 'block'; // Muestra el botón de reinicio total
+    if (turnCounter > MAX_TURNS) {
+        logEvent("¡Game Over! Has alcanzado el máximo de turnos.");
+        mostrarPantallaGameOver();
         return;
     }
 
     if (cardsDrawnThisTurn === 0) {
-        turnCounter++; // Incrementa el contador de turnos solo al inicio del turno
-        logEvent(`Inicio del Turno ${turnCounter}`); // Registra el inicio del turno
+        logEvent(`Inicio del Turno ${turnCounter}`);
     }
 
     if (deckSelector.parentElement.style.display !== 'none') {
@@ -76,25 +85,24 @@ function drawRandomCard() {
     if (playableDeck.length === 0) {
         updateMessage("¡No quedan más cartas en el mazo! Reinicia para volver a jugar.");
         drawCardBtn.disabled = true;
-        resetDeckBtn.style.display = 'block'; // Muestra el botón de reiniciar
+        resetDeckBtn.style.display = 'block';
         return;
     }
 
     if (cardsDrawnThisTurn >= MAX_CARDS_PER_TURN) {
-        updateMessage(`Has sacado el límite de ${MAX_CARDS_PER_TURN} cartas por turno. Reinicia el mazo.`);
+        updateMessage(`Has sacado el límite de ${MAX_CARDS_PER_TURN} cartas por turno. Siguiente turno.`);
         drawCardBtn.disabled = true;
-        resetDeckBtn.style.display = 'block'; // Muestra el botón de reiniciar
+        resetDeckBtn.style.display = 'block';
         return;
     }
 
     let drawnCard;
-    let attempts = 0; // Para evitar un bucle infinito si todas las cartas posibles ya están restringidas
+    let attempts = 0;
 
     do {
         const randomIndex = Math.floor(Math.random() * playableDeck.length);
         drawnCard = playableDeck[randomIndex];
 
-        // --- RESTRICCIÓN PARA "La espada" ---
         if (
             drawnCard.name === "La espada" &&
             turnCounter - lastSwordTurn < 10
@@ -104,10 +112,9 @@ function drawRandomCard() {
                 logEvent('No se pudo encontrar una carta válida. Intenta reiniciar el mazo.');
                 return;
             }
-            continue; // Busca otra carta
+            continue;
         }
 
-        // Límite de repeticiones para otras cartas
         if (cardUsageCount[drawnCard.name] >= 2) {
             attempts++;
             if (attempts > 20) {
@@ -121,7 +128,6 @@ function drawRandomCard() {
         break;
     } while (true);
 
-    // --- Si es "La espada", actualiza el turno ---
     if (drawnCard.name === "La espada") {
         lastSwordTurn = turnCounter;
     }
@@ -134,18 +140,49 @@ function drawRandomCard() {
     drawnCards.push(drawnCard);
 
     displayCard(drawnCard);
-    handleCardEffect(drawnCard); // Aplica los efectos de la carta
+    handleCardEffect(drawnCard); // Esta función está en game.js
     logEvent(`Has sacado la carta "${drawnCard.name}": ${drawnCard.description}`);
     cardsDrawnThisTurn++;
+
+    if (player.health <= 0) {
+        player.health = 0;
+        updatePlayerStats();
+        logEvent("¡Game Over! Tu salud ha llegado a 0.");
+        mostrarPantallaGameOver();
+        return;
+    }
 
     if (cardsDrawnThisTurn < MAX_CARDS_PER_TURN) {
         updateMessage(`Turno ${turnCounter}: Cartas sacadas este turno: ${cardsDrawnThisTurn}/${MAX_CARDS_PER_TURN}`);
     } else {
-        updateMessage(`Turno ${turnCounter}: Has alcanzado el límite de ${MAX_CARDS_PER_TURN} cartas este turno. Reinicia el mazo.`);
+        updateMessage(`Turno ${turnCounter}: Has alcanzado el límite de ${MAX_CARDS_PER_TURN} cartas este turno. Siguiente turno.`);
         drawCardBtn.disabled = true;
-        resetDeckBtn.style.display = 'block'; // Muestra el botón de reiniciar
+        resetDeckBtn.style.display = 'block';
     }
 }
+
+// Evento para sacar carta
+drawCardBtn.addEventListener('click', drawRandomCard);
+
+// Evento para pasar al siguiente turno
+resetDeckBtn.addEventListener('click', () => {
+    cardsDrawnThisTurn = 0;
+    cardDisplay.innerHTML = '';
+    drawCardBtn.disabled = false;
+    resetDeckBtn.style.display = 'none';
+    turnCounter++;
+    if (turnCounter > MAX_TURNS) {
+        logEvent("¡Game Over! Has alcanzado el máximo de turnos.");
+        mostrarPantallaGameOver();
+        return;
+    }
+    updateMessage(`Turno ${turnCounter}: Saca una carta.`);
+});
+
+// Evento para reiniciar el juego
+restartGameBtn.addEventListener('click', () => {
+    location.reload();
+});
 
 // Función para mostrar una carta
 function displayCard(card) {
@@ -154,7 +191,6 @@ function displayCard(card) {
     cardElement.innerHTML = `
         <img src="${card.image}" alt="${card.name}" class="card-image">
         <h3>${card.name}</h3>
-       
     `;
     cardDisplay.appendChild(cardElement);
 }
@@ -163,23 +199,16 @@ function displayCard(card) {
 function updateMessage(message) {
     if (messageDisplay) {
         messageDisplay.textContent = message;
-        // Quita clases previas
         messageDisplay.classList.remove('warning', 'final');
-        // Aplica color especial según el turno
-        if (turnCounter === MAX_TURNS - 2) { // Turno 9 si MAX_TURNS es 11
+        if (turnCounter === MAX_TURNS - 2) {
             messageDisplay.classList.add('warning');
-        } else if (turnCounter === MAX_TURNS - 1) { // Turno 10 si MAX_TURNS es 11
+        } else if (turnCounter === MAX_TURNS - 1) {
             messageDisplay.classList.add('final');
         }
     }
 }
 
-function updatePlayerStats(name, health, mana) {
-    document.getElementById('playerName').querySelector('span').textContent = name;
-    document.getElementById('playerHealth').querySelector('span').textContent = health;
-    document.getElementById('playerMana').querySelector('span').textContent = mana;
-}
-
+// Función para registrar eventos
 function logEvent(message) {
     const eventList = document.getElementById('eventList');
     const eventItem = document.createElement('li');
@@ -187,79 +216,8 @@ function logEvent(message) {
     eventList.appendChild(eventItem);
 }
 
-function handleCardEffect(card) {
-    switch (card.name) {
-        case "La Gema":
-            player.gold += 5000;
-            logEvent("¡Has ganado 5000 gp!");
-            break;
-        case "La Ruina":
-            player.gold = 0;
-            logEvent("¡Has perdido todo tu oro!");
-            break;
-        case "El Vacío":
-            player.level = Math.max(1, player.level - 1); // No baja de nivel 1
-            logEvent("¡Has perdido 1 nivel!");
-            break;
-        case "El Sabio":
-            player.level += 1;
-            logEvent("¡Has subido 1 nivel!");
-            break;
-        case "La Estrella":
-            player.health = Math.min(100, player.health + 20); // Salud máxima de 100
-            logEvent("¡Tu salud ha aumentado en 20 puntos!");
-            break;
-        case "El Cráneo":
-            player.health -= 30;
-            logEvent("¡Un enemigo te ha atacado! Pierdes 30 puntos de salud.");
-            break;
-        case "El Troll":
-            if (player.inventory.includes("Espada")) {
-                player.health -= 40; // Daño reducido si el jugador tiene una espada
-                logEvent("¡Un Troll gigante te ha atacado! Pero gracias a tu espada, solo pierdes 40 puntos de salud.");
-            } else {
-                player.health -= 80; // Daño completo si no tiene una espada
-                logEvent("¡Un Troll gigante te ha atacado! Pierdes 80 puntos de salud.");
-            }
-            break;
-        case "La espada":
-            player.inventory.push("Espada"); // Añade "Espada" al inventario
-            logEvent("¡Has obtenido una espada! Se ha añadido a tu inventario.");
-            break;
-        default:
-            logEvent(`La carta "${card.name}" no tiene un efecto directo.`);
-            break;
-    }
-
-    // Actualiza los atributos del personaje en la interfaz
-    updatePlayerStats();
-    updatePlayerInventory(); // Asegúrate de que esta función se llame aquí
-}
-
-// Event Listeners
-drawCardBtn.addEventListener('click', drawRandomCard);
-resetDeckBtn.addEventListener('click', () => {
-    initializeDeck();
-    resetDeckBtn.style.display = 'none';
-    restartGameBtn.style.display = 'none'; // Oculta el botón al reiniciar el mazo
-});
-
-// Listener para el botón de reinicio total
-restartGameBtn.addEventListener('click', () => {
-    location.reload();
-});
-
-// Añadimos un listener para que el mazo se reinicie automáticamente al cambiar la selección
-deckSelector.addEventListener('change', initializeDeck); 
-
+// Inicialización al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
-    turnCounter = 0; // Reinicia el contador de turnos al cargar la página
     initializeDeck();
-    
-    // Ejemplo: Actualizar atributos del personaje
-    updatePlayerStats('Héroe', 80, 40);
-    
-    // Ejemplo: Registrar un evento
-    //logEvent('Has sacado la carta "El Mago".');
-   // logEvent('Tu salud ha disminuido en 10 puntos.');
+    updatePlayerStats();
 });

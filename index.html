@@ -35,7 +35,8 @@
             </div>
             <div id="cardDisplay" class="card-display"></div>
             <div id="buttonContainer">
-                <button id="drawCardBtn" aria-label="Sacar una carta del mazo">Sacar Carta</button>
+                <button id="startGameBtn">Iniciar Juego</button>
+                <button id="drawCardBtn" aria-label="Sacar una carta del mazo" style="display:none;">Sacar Carta</button>
                 <button id="resetDeckBtn" aria-label="Reiniciar el mazo" style="display: none;">Siguiente Turno</button>
                 <button id="restartGameBtn" style="display:none; margin-top:16px;">Volver a iniciar el juego</button>
             </div>
@@ -47,6 +48,24 @@
                 <!-- Los eventos se agregarán dinámicamente aquí -->
             </ul>
         </div>
+    </div>
+
+    <div id="game-container">
+      <!-- Aquí van los datos y elementos del juego -->
+    </div>
+
+    <div id="mainGameSection">
+      <!-- Todo el contenido del juego aquí -->
+    </div>
+
+    <!-- Modal de Game Over Fantasía con imagen decorativa -->
+    <div id="gameover-modal" class="modal" style="display:none;">
+      <div class="modal-content fantasy-modal">
+        <img src="img/gameover_scroll.png" alt="Pergamino decorativo" class="modal-scroll">
+        <h2>¡Fin del juego!</h2>
+        <p>Tu aventura ha terminado.<br>¿Te atreves a intentarlo de nuevo?</p>
+        <button id="restartGameBtnModal" class="fantasy-btn">Reiniciar juego</button>
+      </div>
     </div>
 
     <script src="js/cards.js"></script>

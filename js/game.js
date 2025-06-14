@@ -137,12 +137,24 @@ function updatePlayerInventory() {
 
 function checkGameOver() {
     if (player.health <= 0) {
-        player.health = 0; // Asegúrate de que no sea menor a 0
-        updatePlayerStats(); // Actualiza la interfaz para reflejar la salud en 0
+        player.health = 0;
+        updatePlayerStats();
         logEvent("¡Game Over! Tu salud ha llegado a 0.");
-        drawCardBtn.disabled = true; // Desactiva el botón de sacar carta
-        resetDeckBtn.style.display = 'block'; // Muestra el botón de reiniciar
-        restartGameBtn.style.display = 'block'; // Muestra el botón de reinicio total
-        alert("¡Game Over! Has perdido la partida.");
+        mostrarPantallaGameOver();
     }
 }
+
+// Nueva función para mostrar la pantalla de fin
+function mostrarPantallaGameOver() {
+    // Opcional: desactiva botones del juego
+    document.getElementById('drawCardBtn').disabled = true;
+    document.getElementById('resetDeckBtn').disabled = true;
+    document.getElementById('restartGameBtn').disabled = true;
+    // Muestra el modal
+    document.getElementById('gameover-modal').style.display = 'flex';
+}
+
+// Botón de reinicio en el modal
+document.getElementById('restartGameBtnModal').addEventListener('click', () => {
+    location.reload();
+});

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=IM+Fell+English+SC&display=swap');
+
 /* Ajuste general del cuerpo */
 body {
     font-family: 'Arial', sans-serif;
@@ -368,6 +370,75 @@ button#resetDeckBtn:hover {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     color: #eee;
     font-size: 0.9em;
+}
+
+/* Modal de Game Over */
+.modal {
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(30, 20, 10, 0.85);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.fantasy-modal {
+  position: relative;
+  background: linear-gradient(135deg, #f9e7c2 80%, #e2c48d 100%);
+  border: 6px solid #bfa76a;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px #3e2c0a99, 0 0 0 12px #bfa76a44;
+  padding: 48px 36px 36px 36px;
+  text-align: center;
+  max-width: 400px;
+  font-family: 'IM Fell English SC', 'UnifrakturCook', serif;
+  color: #4d2e00;
+  overflow: visible;
+}
+
+.fantasy-modal h2 {
+  font-family: 'UnifrakturCook', cursive;
+  font-size: 2.3em;
+  margin-bottom: 12px;
+  color: #7c4a02;
+  text-shadow: 0 2px 8px #fff7, 0 0 2px #bfa76a;
+  letter-spacing: 2px;
+}
+
+.fantasy-modal p {
+  font-size: 1.2em;
+  margin-bottom: 24px;
+  color: #5e3a0b;
+  text-shadow: 0 1px 0 #fff8;
+}
+
+.fantasy-btn {
+  padding: 12px 32px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: 2px solid #7c4a02;
+  background: linear-gradient(90deg, #bfa76a 60%, #e2c48d 100%);
+  color: #fff;
+  font-family: 'IM Fell English SC', serif;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px #bfa76a55;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.fantasy-btn:hover {
+  background: #7c4a02;
+  color: #ffe9b3;
+}
+
+.modal-scroll {
+  width: 80px;
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 4px 12px #bfa76a88);
+  pointer-events: none;
 }
 
 /* Inventario del jugador */
