@@ -12,11 +12,12 @@ const restartGameBtn = document.getElementById('restartGameBtn');
 let playableDeck = [];
 let drawnCards = [];
 let cardsDrawnThisTurn = 0;
-const MAX_CARDS_PER_TURN = 4;
+const MAX_CARDS_PER_TURN = 2;
 const MAX_TURNS = 10;
 let turnCounter = 1;
 let cardUsageCount = {};
 let lastSwordTurn = -10;
+let eventosTurnoActual = [];
 
 // Inicializa el mazo y los atributos del jugador
 function initializeDeck() {
@@ -171,6 +172,11 @@ resetDeckBtn.addEventListener('click', () => {
     drawCardBtn.disabled = false;
     resetDeckBtn.style.display = 'none';
     turnCounter++;
+
+    // Limpiar eventos al iniciar cada turno
+    eventosTurnoActual = [];
+    refrescarEventosTurno();
+
     if (turnCounter > MAX_TURNS) {
         logEvent("¡Game Over! Has alcanzado el máximo de turnos.");
         mostrarPantallaGameOver();
@@ -193,6 +199,14 @@ function displayCard(card) {
         <h3>${card.name}</h3>
     `;
     cardDisplay.appendChild(cardElement);
+
+    // Si la carta es de ataque enemigo, activa la animación
+    if (["El Cráneo", "El Troll"].includes(card.name)) {
+        setTimeout(() => {
+            cardElement.classList.add('card-hit');
+            setTimeout(() => cardElement.classList.remove('card-hit'), 600);
+        }, 100); // Pequeño retardo para asegurar que se vea la animación
+    }
 }
 
 // Función para actualizar el mensaje
@@ -210,10 +224,28 @@ function updateMessage(message) {
 
 // Función para registrar eventos
 function logEvent(message) {
+    eventosTurnoActual.push(message);
+    refrescarEventosTurno();
+}
+
+// Función para limpiar eventos
+function limpiarEventos() {
     const eventList = document.getElementById('eventList');
-    const eventItem = document.createElement('li');
-    eventItem.textContent = message;
-    eventList.appendChild(eventItem);
+    eventList.innerHTML = '';
+}
+
+// Función para refrescar eventos del turno
+function refrescarEventosTurno() {
+    const eventList = document.getElementById('eventList');
+    eventList.innerHTML = '';
+    eventosTurnoActual.forEach(msg => {
+        const eventItem = document.createElement('li');
+        eventItem.textContent = msg;
+        eventList.appendChild(eventItem);
+    });
+    // Resalta el último evento
+    const items = eventList.querySelectorAll('li');
+    if (items.length) items[items.length - 1].classList.add('last-event');
 }
 
 // Inicialización al cargar la página

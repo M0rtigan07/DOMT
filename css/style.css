@@ -241,97 +241,75 @@ body {
 /* Área lateral derecha (eventos) */
 #rightSidebar {
     flex: 1;
-    background-color: #444;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    overflow-y: auto; /* Permite desplazarse si el contenido excede la altura */
-    max-height: 100%; /* Asegura que no exceda la altura del contenedor */
+    background: linear-gradient(135deg, #f9e7c2 80%, #e2c48d 100%);
+    border: 4px solid #bfa76a;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px #3e2c0a44;
+    padding: 18px 12px 18px 18px;
+    font-family: 'IM Fell English SC', serif;
+    color: #4d2e00;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 #rightSidebar h2 {
-    color: #ffd700;
-    margin-bottom: 15px;
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1.5em;
+    color: #7c4a02;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 6px #fff7, 0 0 2px #bfa76a;
 }
 
 #eventList {
     list-style: none;
     padding: 0;
-    max-height: 100%;
-    overflow-y: auto;
+    margin: 0;
 }
 
 #eventList li {
+    background: rgba(255,255,255,0.18);
+    border-left: 5px solid #bfa76a;
+    border-radius: 8px;
     margin-bottom: 10px;
-    padding: 10px;
-    background-color: #555;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 10px 12px 10px 16px;
+    font-size: 1.08em;
+    color: #5e3a0b;
+    box-shadow: 0 1px 4px #bfa76a22;
+    position: relative;
+    transition: background 0.2s;
 }
 
-.message {
-    color: #ffcc00; /* Un color para destacar el mensaje */
+#eventList li.last-event {
+    background: linear-gradient(90deg, #ffe9b3 60%, #e2c48d 100%);
+    border-left: 5px solid #7c4a02;
+    color: #7c4a02;
     font-weight: bold;
-    margin-bottom: 20px;
-    min-height: 1.2em; /* Para evitar saltos de diseño cuando no hay mensaje */
+    box-shadow: 0 2px 8px #bfa76a44;
 }
 
-button {
-    background-color: #007bff; /* Azul */
-    color: white;
-    border: none;
-    padding: 12px 25px;
+#eventList li::before {
+    content: "✦";
+    color: #bfa76a;
     font-size: 1.1em;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin: 10px;
+    margin-right: 8px;
+    position: absolute;
+    left: 0;
+    top: 10px;
 }
 
-button:hover {
-    background-color: #0056b3;
+#eventList li:last-child::before {
+    color: #7c4a02;
 }
 
-button#resetDeckBtn {
-    background-color: #dc3545; /* Rojo */
+#eventList::-webkit-scrollbar {
+    width: 8px;
+    background: #e2c48d;
+    border-radius: 8px;
 }
-
-button#resetDeckBtn:hover {
-    background-color: #c82333;
-}
-
-#buttonContainer {
-    display: flex;
-    justify-content: center; /* Centra los botones horizontalmente */
-    gap: 10px; /* Espacio entre los botones */
-    margin-top: 20px; /* Espacio superior para separar los botones del contenido */
-}
-
-#drawCardBtn, #resetDeckBtn {
-    padding: 10px 20px;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#drawCardBtn {
-    background-color: #007bff; /* Azul */
-    color: white;
-}
-
-#drawCardBtn:hover {
-    background-color: #0056b3; /* Azul más oscuro al pasar el cursor */
-}
-
-#resetDeckBtn {
-    background-color: #dc3545; /* Rojo */
-    color: white;
-}
-
-#resetDeckBtn:hover {
-    background-color: #c82333; /* Rojo más oscuro al pasar el cursor */
+#eventList::-webkit-scrollbar-thumb {
+    background: #bfa76a;
+    border-radius: 8px;
 }
 
 /* Contenedor de los turnos */
@@ -508,4 +486,14 @@ button#resetDeckBtn:hover {
     background: linear-gradient(90deg, #fecaca 0%, #f87171 100%);
     border-left: 6px solid #dc2626;
     color: #7f1d1d;
+}
+
+@keyframes card-hit {
+  0% { box-shadow: 0 0 0 0 #ff0000; transform: scale(1);}
+  20% { box-shadow: 0 0 16px 8px #ff000088; transform: scale(1.05);}
+  50% { box-shadow: 0 0 32px 16px #ff000088; transform: scale(0.97);}
+  100% { box-shadow: 0 0 0 0 #ff0000; transform: scale(1);}
+}
+.card-hit {
+  animation: card-hit 0.6s;
 }
