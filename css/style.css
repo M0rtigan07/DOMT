@@ -221,21 +221,61 @@ body {
 }
 
 #drawCardBtn {
-    background-color: #007bff; /* Azul */
-    color: white;
+  background: linear-gradient(90deg, #ffe9b3 60%, #bfa76a 100%);
+  border: 2.5px solid #a86d1a;
+  border-radius: 12px;
+  color: #7c4a02;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1.18em;
+  font-weight: bold;
+  padding: 12px 38px;
+  margin: 10px 0 10px 0;
+  box-shadow: 0 2px 12px #bfa76a44, 0 0 0 4px #fffbe6 inset;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.1s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
-#drawCardBtn:hover {
-    background-color: #0056b3; /* Azul más oscuro al pasar el cursor */
+#drawCardBtn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #bfa76a 60%, #ffe9b3 100%);
+  color: #fffbe6;
+  transform: scale(1.05);
+  box-shadow: 0 4px 18px #bfa76a77, 0 0 0 6px #fffbe6aa inset;
+}
+
+#drawCardBtn:active:not(:disabled) {
+  background: #a86d1a;
+  color: #ffe9b3;
+  transform: scale(0.97);
+}
+
+#drawCardBtn:disabled {
+  background: #e2c48d;
+  color: #bfa76a;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 #resetDeckBtn {
-    background-color: #dc3545; /* Rojo */
-    color: white;
+  background: linear-gradient(90deg, #bfa76a 60%, #e2c48d 100%);
+  border: 2px solid #bfa76a;
+  border-radius: 8px;
+  color: #4d2e00;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1.08em;
+  font-weight: bold;
+  padding: 8px 24px;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
-
-#resetDeckBtn:hover {
-    background-color: #c82333; /* Rojo más oscuro al pasar el cursor */
+#resetDeckBtn:disabled {
+  background: #e2c48d;
+  color: #bfa76a;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 /* Área lateral derecha (eventos) */
@@ -421,27 +461,71 @@ body {
 
 /* Inventario del jugador */
 #playerInventory {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0;
-    background-color: #444;
-    color: whitesmoke;
-    font-weight: bolder;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    max-height: 150px;
-    overflow-y: auto; /* Permite desplazarse si hay muchos objetos */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: linear-gradient(135deg, #f9e7c2 80%, #e2c48d 100%);
+  border: 2px solid #bfa76a;
+  border-radius: 8px;
+  box-shadow: 0 1px 6px #bfa76a33;
+  min-height: 40px;
+  max-height: 120px;      /* Más bajo */
+  overflow-y: auto;
+  margin-bottom: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #bfa76a #e2c48d;
+}
+
+#playerInventory::-webkit-scrollbar {
+  width: 6px;
+  background: #e2c48d;
+  border-radius: 6px;
+}
+#playerInventory::-webkit-scrollbar-thumb {
+  background: #bfa76a;
+  border-radius: 6px;
 }
 
 #playerInventory li {
-    margin-bottom: 5px;
-    padding: 5px;
-    background-color: #555;
-    border-radius: 5px;
-    color: #eee;
-    font-size: 0.9em;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  background: rgba(255,255,255,0.13);
+  border-radius: 6px;
+  padding: 4px 7px;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.98em;
+  color: #6d4c1c;
+  font-weight: bold;
+  box-shadow: 0 1px 3px #bfa76a22;
+  min-height: 28px;
+}
+
+#playerInventory li:last-child {
+  margin-bottom: 0;
+}
+
+#playerInventory span {
+  font-size: 0.98em;
+  color: #7c4a02;
+  letter-spacing: 0.5px;
+}
+
+#playerInventory .item-type {
+  font-size: 0.92em;
+  color: #bfa76a;
+  margin-left: auto;
+  font-style: italic;
+  padding-left: 7px;
+}
+
+#playerInventory li.empty-inventory {
+  font-style: italic;
+  color: #bfa76a;
+  background: none;
+  box-shadow: none;
+  text-align: center;
+  justify-content: center;
 }
 
 /* Estilo para el área de mensajes */
@@ -496,4 +580,302 @@ body {
 }
 .card-hit {
   animation: card-hit 0.6s;
+}
+
+/* Estilos para el modal de batalla */
+#battle-modal {
+  position: fixed;
+  z-index: 10000;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(30, 20, 10, 0.92);
+  display: flex; align-items: center; justify-content: center;
+}
+
+#battle-modal .fantasy-modal {
+  position: relative;
+  background: linear-gradient(135deg, #f9e7c2 80%, #e2c48d 100%);
+  border: 8px double #bfa76a;
+  border-radius: 32px;
+  box-shadow: 0 8px 48px #3e2c0a99, 0 0 0 18px #bfa76a33;
+  padding: 56px 36px 36px 36px;
+  text-align: center;
+  max-width: 440px;
+  font-family: 'IM Fell English SC', 'UnifrakturCook', serif;
+  color: #4d2e00;
+  overflow: visible;
+  animation: battle-epic-in 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+@keyframes battle-epic-in {
+  0% { transform: scale(0.7) rotate(-8deg); opacity: 0; }
+  60% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+#battle-modal .fantasy-modal h2 {
+  font-family: 'UnifrakturCook', cursive;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  color: #a86d1a;
+  text-shadow: 0 2px 12px #fff7, 0 0 2px #bfa76a;
+  letter-spacing: 2px;
+}
+
+#battle-modal .fantasy-modal p {
+  font-size: 1.25em;
+  margin-bottom: 22px;
+  color: #5e3a0b;
+  text-shadow: 0 1px 0 #fff8;
+}
+
+#battle-events {
+  margin-bottom: 18px;
+}
+
+#battle-events .fantasy-btn {
+  margin: 0 10px 10px 10px;
+  padding: 12px 32px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: 2px solid #a86d1a;
+  background: linear-gradient(90deg, #bfa76a 60%, #e2c48d 100%);
+  color: #fff;
+  font-family: 'IM Fell English SC', serif;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px #bfa76a55;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+#battle-events .fantasy-btn:hover {
+  background: #a86d1a;
+  color: #ffe9b3;
+  transform: scale(1.07);
+}
+
+#battle-end-btn.fantasy-btn {
+  margin-top: 10px;
+  background: linear-gradient(90deg, #7c4a02 60%, #bfa76a 100%);
+  border: 2px solid #7c4a02;
+  color: #fff;
+  box-shadow: 0 2px 8px #bfa76a55;
+}
+#battle-end-btn.fantasy-btn:hover {
+  background: #bfa76a;
+  color: #7c4a02;
+}
+
+#battle-modal .fantasy-modal::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -48px; left: 50%;
+  width: 120px; height: 48px;
+  background: url('img/gameover_scroll.png') no-repeat center/contain;
+  transform: translateX(-50%);
+  opacity: 0.85;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 12px #bfa76a88);
+}
+
+/* Nuevos estilos para la lista de eventos de batalla */
+#battle-event-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0 0;
+  max-height: 120px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 10px;
+  box-shadow: 0 1px 6px #bfa76a33;
+}
+
+#battle-event-list li {
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  border-left: 4px solid #bfa76a;
+  background: rgba(255, 233, 179, 0.22);
+  color: #7c4a02;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1.08em;
+  border-radius: 6px;
+  position: relative;
+  animation: battle-event-in 0.4s;
+}
+
+#battle-event-list li:last-child {
+  background: linear-gradient(90deg, #ffe9b3 60%, #e2c48d 100%);
+  border-left: 4px solid #a86d1a;
+  color: #a86d1a;
+  font-weight: bold;
+}
+
+@keyframes battle-event-in {
+  0% { opacity: 0; transform: translateY(12px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+
+#companionBox {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #f9e7c2 80%, #e2c48d 100%);
+  border: 2px solid #bfa76a;
+  border-radius: 8px;
+  box-shadow: 0 1px 6px #bfa76a22;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1em;
+  color: #4d2e00;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  min-height: 38px;
+  max-width: 98%;
+}
+
+#companionBox .knight-icon {
+  font-size: 1.5em;
+  margin-right: 8px;
+  filter: drop-shadow(0 1px 2px #bfa76a88);
+}
+
+.turn-info {
+  background: linear-gradient(90deg, #e2c48d 80%, #bfa76a 100%);
+  border: 2px solid #bfa76a;
+  border-radius: 8px;
+  box-shadow: 0 1px 6px #bfa76a33;
+  padding: 6px 18px;
+  margin-bottom: 12px;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1.12em;
+  color: #7c4a02;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.turn-info.turn-animate {
+  animation: turn-bounce 0.5s;
+}
+@keyframes turn-bounce {
+  0% { transform: scale(1);}
+  30% { transform: scale(1.15);}
+  60% { transform: scale(0.95);}
+  100% { transform: scale(1);}
+}
+
+/* Efecto visual de victoria */
+.victoria-efecto {
+  position: relative;
+  z-index: 1;
+  animation: victoria-pop 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+@keyframes victoria-pop {
+  0% { transform: scale(0.7) rotate(-8deg); opacity: 0; }
+  60% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.victoria-glow {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 180px; height: 180px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffe9b3 0%, #bfa76a88 60%, transparent 100%);
+  opacity: 0.8;
+  animation: victoria-glow-anim 1.5s ease-out;
+  z-index: 2;
+}
+
+@keyframes victoria-glow-anim {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7);}
+  30% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.1);}
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.4);}
+}
+
+/* Efecto visual de derrota */
+.derrota-efecto {
+  position: relative;
+  z-index: 1;
+  animation: derrota-pop 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+@keyframes derrota-pop {
+  0% { transform: scale(0.7) rotate(8deg); opacity: 0; }
+  60% { transform: scale(1.08) rotate(-2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.derrota-glow {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 180px; height: 180px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffb3b3 0%, #b2222288 60%, transparent 100%);
+  opacity: 0.8;
+  animation: derrota-glow-anim 1.5s ease-out;
+  z-index: 2;
+}
+
+@keyframes derrota-glow-anim {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7);}
+  30% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.1);}
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.4);}
+}
+
+/* Estilos para el modal de situación */
+#situation-modal {
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(30, 20, 10, 0.85);
+  display: flex; align-items: center; justify-content: center;
+}
+
+#situation-modal .fantasy-modal {
+  background: linear-gradient(135deg, #e2c48d 80%, #f9e7c2 100%);
+  border: 4px solid #bfa76a;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px #3e2c0a44;
+  padding: 28px 18px 18px 18px;
+  text-align: center;
+  max-width: 400px;
+  font-family: 'IM Fell English SC', serif;
+  color: #4d2e00;
+}
+
+/* Opciones en el modal de situación */
+#situation-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+#situation-options .fantasy-btn {
+  margin: 8px 12px 0 12px;
+  padding: 10px 28px;
+  font-size: 1.08em;
+  border-radius: 8px;
+  border: 2px solid #a86d1a;
+  background: linear-gradient(90deg, #bfa76a 60%, #e2c48d 100%);
+  color: #fff;
+  font-family: 'IM Fell English SC', serif;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px #bfa76a55;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+#situation-options .fantasy-btn:hover {
+  background: #a86d1a;
+  color: #ffe9b3;
+  transform: scale(1.07);
 }

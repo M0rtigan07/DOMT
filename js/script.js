@@ -13,7 +13,7 @@ let playableDeck = [];
 let drawnCards = [];
 let cardsDrawnThisTurn = 0;
 const MAX_CARDS_PER_TURN = 2;
-const MAX_TURNS = 10;
+const MAX_TURNS = 5;
 let turnCounter = 1;
 let cardUsageCount = {};
 let lastSwordTurn = -10;
@@ -55,6 +55,7 @@ function initializeDeck() {
     resetDeckBtn.style.display = 'none';
     restartGameBtn.style.display = 'none';
     updateMessage("Selecciona un mazo y pulsa 'Iniciar Juego'.");
+    
 }
 
 // Evento para el botón de inicio
@@ -183,6 +184,8 @@ resetDeckBtn.addEventListener('click', () => {
         return;
     }
     updateMessage(`Turno ${turnCounter}: Saca una carta.`);
+    animateTurnInfo(); // Añadido para animar la información del turno
+    mostrarSituacionAleatoria(); // Llama aquí a la función del game.js
 });
 
 // Evento para reiniciar el juego
@@ -246,6 +249,24 @@ function refrescarEventosTurno() {
     // Resalta el último evento
     const items = eventList.querySelectorAll('li');
     if (items.length) items[items.length - 1].classList.add('last-event');
+}
+
+// Función para actualizar la información del turno
+function updateTurnInfo(turnCounter, maxTurns, cardsDrawnThisTurn, maxCardsPerTurn) {
+    const turnInfo = document.getElementById('turnInfo');
+    turnInfo.innerHTML = `
+        <span>Turno <b>${turnCounter}</b> de <b>${maxTurns}</b></span>
+        &nbsp;|&nbsp;
+        <span>Cartas este turno: <b>${cardsDrawnThisTurn}</b> / ${maxCardsPerTurn}</span>
+    `;
+}
+
+// Función para animar la información del turno
+function animateTurnInfo() {
+    const turnInfo = document.getElementById('turnInfo');
+    turnInfo.classList.remove('turn-animate');
+    void turnInfo.offsetWidth; // Forzar reflow
+    turnInfo.classList.add('turn-animate');
 }
 
 // Inicialización al cargar la página
