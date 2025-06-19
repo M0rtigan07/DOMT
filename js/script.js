@@ -185,7 +185,7 @@ resetDeckBtn.addEventListener('click', () => {
     }
     updateMessage(`Turno ${turnCounter}: Saca una carta.`);
     animateTurnInfo(); // Añadido para animar la información del turno
-    mostrarSituacionAleatoria(); // Llama aquí a la función del game.js
+    mostrarSituacionAleatoria(); // Llama aquí a la función
 });
 
 // Evento para reiniciar el juego

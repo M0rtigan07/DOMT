@@ -467,14 +467,7 @@ function elegirOpcionSituacion(opcion) {
         case 'rechazar':
             logEvent("Rechazas la oferta del mercader y sigues tu camino.");
             break;
-        case 'cofre':
-            logEvent("¡Abres el cofre y encuentras un anillo mágico!");
-            player.inventory.push({ nombre: "Anillo mágico" });
-            break;
-        case 'ignorar':
-            logEvent("Ignoras el cofre y sigues tu camino.");
-            break;
-        // Añade más casos según tus opciones
+        // ...más casos...
     }
     updatePlayerStats();
     updatePlayerInventory();
@@ -493,13 +486,6 @@ const situaciones = [
         opciones: [
             { texto: "Comprar una poción (pierdes 200 oro, ganas una poción)", id: "pocion" },
             { texto: "Rechazar la oferta", id: "rechazar" }
-        ]
-    },
-    {
-        descripcion: "Encuentras un cofre misterioso en el camino.",
-        opciones: [
-            { texto: "Abrir el cofre", id: "cofre" },
-            { texto: "Ignorar el cofre", id: "ignorar" }
         ]
     }
     // Puedes añadir más situaciones aquí
