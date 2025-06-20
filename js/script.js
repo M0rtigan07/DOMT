@@ -10,17 +10,39 @@ const messageDisplay = document.getElementById('messageDisplay');
 const restartGameBtn = document.getElementById('restartGameBtn');
 const turnInfo = document.getElementById('turnInfo');
 
+// Variables globales para los mazos y armas
+let deckOfManyThings = [];
+let armasTienda = [];
+let opcionesPortal = [];
+let majorArcanaTarot = []; // Si quieres cargar el tarot por JSON, hazlo igual
+
 let playableDeck = [];
 let drawnCards = [];
 let cardsDrawnThisTurn = 0;
 const MAX_CARDS_PER_TURN = 2;
-const MAX_TURNS = 25;
+const MAX_TURNS = 15;
 let turnCounter = 1;
 let cardUsageCount = {};
 let lastSwordTurn = -10;
 let eventosTurnoActual = [];
 
-// Inicializa el mazo y los atributos del jugador
+// --- Cargar los JSON al iniciar ---
+async function cargarDatosJuego() {
+    // Carga todos los archivos JSON necesarios
+    const [mazo, armas, portal] = await Promise.all([
+        fetch('data/deck_of_many_things.json').then(r => r.json()),
+        fetch('data/armas_tienda.json').then(r => r.json()),
+        fetch('data/opciones_portal.json').then(r => r.json())
+    ]);
+    deckOfManyThings = mazo;
+    armasTienda = armas;
+    opcionesPortal = portal;
+    // Si quieres cargar el tarot por JSON, hazlo aquí también
+    // majorArcanaTarot = await fetch('data/tarot.json').then(r => r.json());
+    initializeDeck();
+}
+
+// --- Inicializa el mazo y los atributos del jugador ---
 function initializeDeck() {
     const selectedDeckType = deckSelector.value;
 
@@ -29,8 +51,8 @@ function initializeDeck() {
     } else if (selectedDeckType === 'manyThings') {
         playableDeck = [...deckOfManyThings];
     } else {
-        playableDeck = [...majorArcanaTarot];
-        console.warn("Tipo de mazo no reconocido, usando Tarot por defecto.");
+        playableDeck = [...deckOfManyThings];
+        console.warn("Tipo de mazo no reconocido, usando Deck of Many Things por defecto.");
     }
 
     shuffleDeck(playableDeck);
@@ -61,7 +83,7 @@ function initializeDeck() {
     updateTurnInfo(turnCounter, MAX_TURNS, cardsDrawnThisTurn, MAX_CARDS_PER_TURN);
 }
 
-// Barajar el mazo
+// --- Barajar el mazo ---
 function shuffleDeck(deckArray) {
     for (let i = deckArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -69,7 +91,7 @@ function shuffleDeck(deckArray) {
     }
 }
 
-// Evento para el botón de inicio
+// --- Eventos de botones ---
 startGameBtn.addEventListener('click', () => {
     startGameBtn.style.display = 'none';
     drawCardBtn.style.display = 'inline-block';
@@ -77,10 +99,9 @@ startGameBtn.addEventListener('click', () => {
     updateTurnInfo(turnCounter, MAX_TURNS, cardsDrawnThisTurn, MAX_CARDS_PER_TURN);
 });
 
-// Evento para cambiar de mazo
 deckSelector.addEventListener('change', initializeDeck);
 
-// Función para sacar una carta
+// --- Función para sacar una carta ---
 function drawRandomCard() {
     if (turnCounter > MAX_TURNS) {
         logEvent("¡Game Over! Has alcanzado el máximo de turnos.");
@@ -104,7 +125,7 @@ function drawRandomCard() {
         } else if (selectedDeckType === 'manyThings') {
             playableDeck = [...deckOfManyThings];
         } else {
-            playableDeck = [...majorArcanaTarot];
+            playableDeck = [...deckOfManyThings];
         }
         shuffleDeck(playableDeck);
         logEvent("El mazo se ha reiniciado y barajado automáticamente.");
@@ -192,13 +213,13 @@ function drawRandomCard() {
     updateTurnInfo(turnCounter, MAX_TURNS, cardsDrawnThisTurn, MAX_CARDS_PER_TURN);
 }
 
-// Evento para sacar carta
+// --- Evento para sacar carta ---
 drawCardBtn.addEventListener('click', drawRandomCard);
 
-// Evento para pasar al siguiente turno
+// --- Evento para pasar al siguiente turno ---
 resetDeckBtn.addEventListener('click', siguienteTurno);
 
-// Función para pasar al siguiente turno
+// --- Función para pasar al siguiente turno ---
 function siguienteTurno() {
     cardsDrawnThisTurn = 0;
     cardDisplay.innerHTML = '';
@@ -206,10 +227,8 @@ function siguienteTurno() {
     resetDeckBtn.style.display = 'none';
     turnCounter++;
 
-    // Barajar el mazo al inicio de cada turno para mayor aleatoriedad
     shuffleDeck(playableDeck);
 
-    // Limpiar eventos al iniciar cada turno
     eventosTurnoActual = [];
     refrescarEventosTurno();
 
@@ -226,12 +245,12 @@ function siguienteTurno() {
     updateTurnInfo(turnCounter, MAX_TURNS, cardsDrawnThisTurn, MAX_CARDS_PER_TURN);
 }
 
-// Evento para reiniciar el juego
+// --- Evento para reiniciar el juego ---
 restartGameBtn.addEventListener('click', () => {
     location.reload();
 });
 
-// Función para mostrar una carta
+// --- Función para mostrar una carta ---
 function displayCard(card) {
     const cardElement = document.createElement('div');
     cardElement.classList.add('card');
@@ -240,6 +259,13 @@ function displayCard(card) {
         <h3>${card.name}</h3>
     `;
     cardDisplay.appendChild(cardElement);
+
+    // Si es la carta de la tienda, añade evento de click
+    if (card.name === "La Tienda") {
+        cardElement.style.cursor = "pointer";
+        cardElement.title = "Haz clic para abrir la tienda";
+        cardElement.addEventListener('click', mostrarModalTienda);
+    }
 
     // Efecto terrorífico para "La Vampira"
     if (card.name === "La Vampira") {
@@ -253,19 +279,40 @@ function displayCard(card) {
         }, 1200);
     }
 
+     // Efecto visual para la carta Victoria
+    if (card.name === "Victoria") {
+    cardElement.classList.add('victoria-efecto');
+    // Efecto de resplandor
+    const glow = document.createElement('div');
+    glow.className = 'victoria-glow';
+    cardElement.appendChild(glow);
+
+    // Laurel animado
+    const laurel = document.createElement('div');
+    laurel.className = 'victoria-laurel';
+    laurel.innerHTML = `
+        <svg viewBox="0 0 70 70" width="70" height="70">
+            <path d="M35 60 Q15 45 20 25" stroke="#ffe066" stroke-width="6" fill="none"/>
+            <path d="M35 60 Q55 45 50 25" stroke="#ffe066" stroke-width="6" fill="none"/>
+            <ellipse cx="35" cy="25" rx="15" ry="8" fill="#fffbe6" fill-opacity="0.7"/>
+            <ellipse cx="35" cy="25" rx="10" ry="5" fill="#ffe066" fill-opacity="0.7"/>
+        </svg>
+    `;
+    cardElement.appendChild(laurel);
+
+    setTimeout(() => {
+        if (glow.parentNode) glow.parentNode.removeChild(glow);
+        if (laurel.parentNode) laurel.parentNode.removeChild(laurel);
+        cardElement.classList.remove('victoria-efecto');
+    }, 1200);
+}
+
     // Efecto para enemigos
     if (["El Cráneo", "El Troll", "La Dama Oscura"].includes(card.name)) {
         setTimeout(() => {
             cardElement.classList.add('card-hit');
             setTimeout(() => cardElement.classList.remove('card-hit'), 600);
         }, 100);
-    }
-
-    // Efecto para la tienda
-    if (card.name === "La Tienda") {
-        cardElement.style.cursor = "pointer";
-        cardElement.title = "Haz clic para abrir la tienda";
-        cardElement.addEventListener('click', mostrarModalTienda);
     }
 
     // Efecto visual para "La Taberna"
@@ -368,7 +415,7 @@ function displayCard(card) {
     }
 }
 
-// Función para actualizar el mensaje
+// --- Función para actualizar el mensaje ---
 function updateMessage(message) {
     if (messageDisplay) {
         messageDisplay.textContent = message;
@@ -381,19 +428,19 @@ function updateMessage(message) {
     }
 }
 
-// Función para registrar eventos
+// --- Función para registrar eventos ---
 function logEvent(message) {
     eventosTurnoActual.push(message);
     refrescarEventosTurno();
 }
 
-// Función para limpiar eventos
+// --- Función para limpiar eventos ---
 function limpiarEventos() {
     const eventList = document.getElementById('eventList');
     eventList.innerHTML = '';
 }
 
-// Función para refrescar eventos del turno
+// --- Función para refrescar eventos del turno ---
 function refrescarEventosTurno() {
     const eventList = document.getElementById('eventList');
     eventList.innerHTML = '';
@@ -407,7 +454,7 @@ function refrescarEventosTurno() {
     if (items.length) items[items.length - 1].classList.add('last-event');
 }
 
-// Función para actualizar la información del turno
+// --- Función para actualizar la información del turno ---
 function updateTurnInfo(turnCounter, maxTurns, cardsDrawnThisTurn, maxCardsPerTurn) {
     if (!turnInfo) return;
     turnInfo.innerHTML = `
@@ -417,7 +464,7 @@ function updateTurnInfo(turnCounter, maxTurns, cardsDrawnThisTurn, maxCardsPerTu
     `;
 }
 
-// Función para animar la información del turno
+// --- Función para animar la información del turno ---
 function animateTurnInfo() {
     if (!turnInfo) return;
     turnInfo.classList.remove('turn-animate');
@@ -425,5 +472,5 @@ function animateTurnInfo() {
     turnInfo.classList.add('turn-animate');
 }
 
-// Inicializar al cargar la página
-window.addEventListener('DOMContentLoaded', initializeDeck);
+// --- Inicializar al cargar la página ---
+window.addEventListener('DOMContentLoaded', cargarDatosJuego);

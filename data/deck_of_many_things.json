@@ -1,0 +1,21 @@
+[
+  { "name": "La Ruina", "description": "Pierdes todas tus posesiones no mágicas.", "image": "img/cartas/ruina.jpeg" },
+  { "name": "La Tienda", "description": "Puedes comprar armas y pociones.", "image": "img/cartas/tienda.jpeg" },
+  { "name": "El Vacío", "description": "Pierdes 1 nivel.", "image": "img/cartas/vacio.jpeg" },
+  { "name": "El Sabio", "description": "Obtienes experiencia suficiente para subir 1 nivel.", "image": "img/cartas/sabio.jpeg" },
+  { "name": "El Caballero", "description": "Un guerrero de alto nivel te jura lealtad.", "image": "img/cartas/caballero.jpeg" },
+  { "name": "El Cráneo", "description": "Un horrible lich se convierte en tu enemigo personal y te persigue.", "image": "img/cartas/craneo.jpeg" },
+  { "name": "La Visión", "description": "Tienes una premonición sobre un evento importante.", "image": "img/cartas/vision.jpeg" },
+  { "name": "El Troll", "description": "Un Troll gigante  te acecha.", "image": "img/cartas/troll.jpeg" },
+  { "name": "La Dama Oscura", "description": "Una  Dama Oscura te ataca.", "image": "img/cartas/dama.jpeg" },
+  { "name": "La Taberna", "description": "Te emborrachas en una Taberna y pierdes salud.", "image": "img/cartas/la taberna.jpeg" },
+  { "name": "El Banquete", "description": "Disfrutas de un Banquete acompañado de una dama y recuperas salud.", "image": "img/cartas/banquete.jpeg" },
+  { "name": "La Loca", "description": "Una mujer loca hace amenzas en un mercadillo.", "image": "img/cartas/loca.jpeg" },
+  { "name": "La Visita", "description": "La Muerte te visita.", "image": "img/cartas/visita.jpeg" },
+  { "name": "La Vampira", "description": "Una Vampira te seduce y te muerde en el cuello. Pierdes salud", "image": "img/cartas/vampira.jpeg" },
+  { "name": "El Duelo", "description": "Un mercenario te reta a un Duelo", "image": "img/cartas/duelo.jpeg" },
+  { "name": "El Golem", "description": "Un Golem te ataca", "image": "img/cartas/golem.jpeg" },
+  { "name": "Los Brujos", "description": "Eres rodeado por un grupo de malvados Brujos", "image": "img/cartas/brujos.jpeg" },
+  { "name": "El Portal", "description": "Te encuentras con un misterioso Portal ¿te atreves a entrar?", "image": "img/cartas/portal.jpeg" }
+ 
+]

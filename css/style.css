@@ -1407,3 +1407,39 @@ body {
 .companion-icon {
   font-size: 2em;
 }
+
+
+.victoria-efecto {
+  position: relative;
+  animation: victoria-brillo 1.2s cubic-bezier(.68,-0.55,.27,1.55);
+  box-shadow: 0 0 40px 12px #ffe066, 0 0 0 12px #fffbe6cc inset;
+  filter: brightness(1.18) drop-shadow(0 0 18px #ffe066);
+  overflow: visible;
+}
+
+@keyframes victoria-brillo {
+  0% { transform: scale(0.92);}
+  20% { transform: scale(1.12);}
+  40% { transform: scale(1.18);}
+  60% { transform: scale(1.09);}
+  80% { transform: scale(1.03);}
+  100% { transform: scale(1);}
+}
+
+.victoria-laurel {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 70px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.96;
+  animation: victoria-laurel-anim 1.2s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+@keyframes victoria-laurel-anim {
+  0% { opacity: 0; transform: translate(-50%, -60%) scale(0.7);}
+  30% { opacity: 1; transform: translate(-50%, -50%) scale(1.1);}
+  100% { opacity: 0; transform: translate(-50%, -40%) scale(1.3);}
+}

@@ -71,11 +71,13 @@ function handleCardEffect(card) {
             break;
         case "El Cráneo":
             iniciarCombate("Esqueleto Guerrero", 40, 15);
+            resolverCombate({ nombre: "Esqueleto", fuerza: 20 });
             return;
         case "El Troll":
             // Solo aparece si el jugador es nivel 3 o superior
             if (player.level >= 3) {
                 iniciarCombate("Troll Gigante", 60, 25);
+                 resolverCombate({ nombre: "Troll", fuerza: 30 });
             } else {
                 logEvent("¡El Troll se oculta en las sombras! Necesitas ser nivel 3 para enfrentarlo.");
             }
@@ -84,6 +86,7 @@ function handleCardEffect(card) {
             // Solo aparece si el jugador es nivel 5 o superior
             if (player.level >= 4) {
                 iniciarCombate("Dama Oscura", 80, 30);
+                resolverCombate({ nombre: "Dama Oscura", fuerza: 40 });
             } else {
                 logEvent("¡La Dama Oscura se retira! Necesitas ser nivel 4 para enfrentarte a ella.");
             }
@@ -319,7 +322,7 @@ function mostrarCartaVictoria() {
     const cardDisplay = document.getElementById('cardDisplay');
     cardDisplay.innerHTML = `
         <div class="card victoria-efecto">
-            <img src="img/victoria.jpeg" alt="${cartaVictoria.name}" class="card-image">
+            <img src="img/cartas/victoria.jpeg" alt="${cartaVictoria.name}" class="card-image">
             <h3>${cartaVictoria.name}</h3>
             <p>${cartaVictoria.description}</p>
         </div>
@@ -655,3 +658,37 @@ function usarObjetoInventario(idx) {
     updatePlayerInventory();
 }
 
+// Función para resolver un combate contra un enemigo
+function resolverCombate(enemigo) {
+    let ayudaCaballero = 0;
+    if (player.companion === "caballero") {
+        ayudaCaballero = 15;
+        logEvent("El Caballero interviene en la batalla y te protege (+15 defensa).");
+        const battleEvents = document.getElementById('battle-event-list');
+        if (battleEvents) {
+            const eventItem = document.createElement('li');
+            eventItem.textContent = "El Caballero interviene en la batalla y te protege (+15 defensa).";
+            battleEvents.appendChild(eventItem);
+            battleEvents.scrollTop = battleEvents.scrollHeight;
+        }
+    }
+    const danioRecibido = Math.max(0, enemigo.fuerza - ayudaCaballero);
+
+    // Si el jugador gana (por ejemplo, si danioRecibido es 0)
+    if (danioRecibido === 0) {
+        logEvent(`¡Has vencido a ${enemigo.nombre}!`);
+        // Busca la carta de victoria en tu mazo
+        const cartaVictoria = deckOfManyThings.find(c => c.name === "Victoria");
+        if (cartaVictoria) {
+            displayCard(cartaVictoria);
+        } else {
+            // Si no tienes una carta de victoria, muestra un mensaje
+            updateMessage("¡Victoria! Has ganado el combate.");
+        }
+        return;
+    }
+
+    player.health = Math.max(0, player.health - danioRecibido);
+    logEvent(`Has recibido ${danioRecibido} puntos de daño en el combate contra ${enemigo.nombre}.`);
+    updatePlayerStats();
+}
