@@ -1,21 +1,35 @@
-# Ignorar dependencias
+# Ignora dependencias
 node_modules/
 
-# Archivos de salida
-dist/
-android/
-build/
+# Ignora carpetas de salida de Electron
+/dist/
+/build/
+/out/
+*.asar
+
+# Ignora salidas de Capacitor y Android Studio
+/android/
+*.apk
+*.aab
+
+# Ignora configuraciones locales
+.env
+.vscode/
+.idea/
 
 # Archivos del sistema
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# Logs y temporales
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
 
-# Configuración de IDE
-.vscode/
-.idea/
+# Archivos grandes por accidente
+*.exe
+*.zip
+*.tar
+*.7z
+*.rar
