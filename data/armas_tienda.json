@@ -1,3 +1,4 @@
 [
-  { "name": "Espada Larga", "description": "Una espada larga de acero afilado.", "image": "img/armas/espada.jpeg" }
+  { "name": "Espada Larga", "description": "Una espada larga de acero afilado.", "image": "img/armas/espada.jpeg" },
+  { "name": "Escudo", "description": "Un escudo ", "image": "img/armas/escudo.jpeg" }
 ]
